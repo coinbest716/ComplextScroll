@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import Header from "./Header";
 import UserInfoSidebar from "../Sidebar/UserInfoSidebar";
 import MainContent from "../Content/MainContent";
@@ -15,6 +15,43 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   contentItems,
   tabs,
 }) => {
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sidebarRef.current) return;
+
+      const sidebarHeight = sidebarRef.current.offsetHeight;
+      const windowHeight = window.innerHeight;
+      const scrollPosition = window.scrollY;
+      const sidebarOffset = sidebarHeight - windowHeight;
+      console.log(
+        sidebarHeight,
+        windowHeight,
+        window.scrollY,
+        "=========1==========="
+      );
+      if (sidebarHeight < windowHeight) {
+        sidebarRef.current.style.position = "sticky";
+        sidebarRef.current.style.top = `96px`;
+      } else {
+        if (scrollPosition > sidebarOffset) {
+          sidebarRef.current.style.position = "sticky";
+          sidebarRef.current.style.top = `-${sidebarOffset}px`;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    handleScroll(); // Initial check
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -23,8 +60,8 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar container */}
           <aside className="md:w-1/4">
-            <div className="sticky top-24">
-              {" "}
+            <div ref={sidebarRef}>
+              {/* {"stick top-24"} */}
               {/* 24 = header height (96px) / 4 (since we're using rem) */}
               <UserInfoSidebar user={user} />
             </div>
