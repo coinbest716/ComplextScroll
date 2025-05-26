@@ -69,7 +69,7 @@ const UserInfoSidebar: React.FC<UserInfoSidebarProps> = ({ user }) => {
         </div>
         <div className="h-px bg-gray-200 my-4"></div>
         {showDetail && (
-          <div className="w-full h-[800px]">
+          <div className="w-full h-[500px]">
             <div>AAAAAAAAAA</div>
             <div>AAAAAAAAAA</div>
             <div>AAAAAAAAAA</div>
