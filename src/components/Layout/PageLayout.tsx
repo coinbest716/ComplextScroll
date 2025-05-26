@@ -21,23 +21,37 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     const handleScroll = () => {
       if (!sidebarRef.current) return;
 
+      const headerHeight = 90;
       const sidebarHeight = sidebarRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
       const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight - headerHeight;
       const sidebarOffset = sidebarHeight - windowHeight;
+      const containerRect = sidebarRef.current.getBoundingClientRect();
+
       console.log(
         sidebarHeight,
         windowHeight,
         window.scrollY,
         "=========1==========="
       );
+
+      console.log(containerRect, "=========3===========");
+      console.log(sidebarRef.current.style.position, "=========4===========");
+
       if (sidebarHeight < windowHeight) {
         sidebarRef.current.style.position = "sticky";
-        sidebarRef.current.style.top = `96px`;
+        sidebarRef.current.style.top = `${headerHeight}px`;
       } else {
-        if (scrollPosition > sidebarOffset) {
+        if (
+          containerRect.y * -1 >= sidebarOffset &&
+          scrollPosition > sidebarOffset
+        ) {
           sidebarRef.current.style.position = "sticky";
-          sidebarRef.current.style.top = `-${sidebarOffset}px`;
+          sidebarRef.current.style.top = `-${sidebarOffset + 20}px`;
+          console.log(sidebarOffset, "=========2===========");
+        } else {
+          sidebarRef.current.style.position = "sticky";
+          sidebarRef.current.style.top = `-${scrollPosition - headerHeight}px`;
         }
       }
     };
@@ -60,7 +74,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar container */}
           <aside className="md:w-1/4">
-            <div ref={sidebarRef}>
+            <div ref={sidebarRef} style={{ height: "fit-content" }}>
               {/* {"stick top-24"} */}
               {/* 24 = header height (96px) / 4 (since we're using rem) */}
               <UserInfoSidebar user={user} />
